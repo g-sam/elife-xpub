@@ -1,0 +1,146 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE users (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid()
+);
+
+CREATE TABLE manuscripts (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  stage jsonb NOT NULL,
+  title text NOT NULL,
+  type jsonb NOT NULL,
+  cover_letter text NOT NULL,
+  article_identifier text NOT NULL,
+  subject_areas jsonb NOT NULL,
+  previously_discussed text,
+  previously_submitted jsonb,
+  co_submission jsonb,
+  related_manuscripts jsonb,
+  suggested_editors jsonb NOT NULL,
+  excluded_editors jsonb NOT NULL,
+  suggested_reviewers jsonb NOT NULL,
+  excluded_reviewers jsonb NOT NULL,
+  suggestions_conflict jsonb NOT NULL,
+  persons jsonb NOT NULL,
+  qc_issues jsonb,
+  submission_files jsonb NOT NULL,
+  manuscript_history jsonb
+);
+
+CREATE TABLE article_search_parameters (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  title text NOT NULL,
+  corresponding_author text NOT NULL
+);
+
+CREATE TABLE manuscript_people (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  user jsonb,
+  role jsonb NOT NULL,
+  alias jsonb,
+  metadata jsonb
+);
+
+CREATE TABLE user_aliases (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  first_name text NOT NULL,
+  last_name text NOT NULL,
+  published_name text,
+  email text NOT NULL,
+  institution text NOT NULL
+);
+
+CREATE TABLE author_metadata (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  rank integer NOT NULL,
+  contributions text NOT NULL,
+  corresponding jsonb NOT NULL,
+  conflict_of_interest text
+);
+
+CREATE TABLE editor_suggestions (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  user jsonb NOT NULL,
+  role jsonb NOT NULL,
+  reason text
+);
+
+CREATE TABLE reviewer_suggestions (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  name text NOT NULL,
+  email text NOT NULL,
+  reason text
+);
+
+CREATE TABLE change_logs (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  manuscript jsonb NOT NULL,
+  user jsonb NOT NULL,
+  actions text NOT NULL
+);
+
+CREATE TABLE files (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  uri text NOT NULL,
+  type jsonb NOT NULL,
+  format text NOT NULL,
+  size text NOT NULL,
+  last_change_date timestamp without time zone NOT NULL,
+  last_change_user jsonb NOT NULL
+);
+
+CREATE TABLE related_submissions (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  connection_type jsonb NOT NULL,
+  submission_identifier text NOT NULL,
+  title text NOT NULL
+);
+
+CREATE TABLE qc_issues (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  submission jsonb NOT NULL,
+  location text NOT NULL,
+  comments jsonb NOT NULL,
+  resolved jsonb NOT NULL
+);
+
+CREATE TABLE comments (
+  seq SERIAL NOT NULL UNIQUE,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created timestamp without time zone NOT NULL,
+  updated timestamp without time zone NOT NULL,
+  user jsonb NOT NULL,
+  text text NOT NULL
+);
