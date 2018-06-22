@@ -1,6 +1,8 @@
 /* eslint-disable import/extensions */
 import './fonts/index.css'
 
+const gridUnit = 6
+
 export default {
   /* Colors */
   colorPrimary: '#0288d1',
@@ -40,14 +42,13 @@ export default {
   fontLineHeight6: '16px',
 
   /* Spacing */
-  gridUnit: '6px',
-  verticalXxl: 'gridUnit'*20,
-  verticalXl: 'gridUnit'*12,
-  verticalL: 'gridUnit'*8,
-  verticalM: 'gridUnit'*6,
-  verticalS: 'gridUnit'*4,
-  verticalXs: 'gridUnit'*2,
-  verticalXxs: 'gridUnit',
+  verticalXxl: `${gridUnit * 20}px`,
+  verticalXl: `${gridUnit * 12}px`,
+  verticalL: `${gridUnit * 8}px`,
+  verticalM: `${gridUnit * 6}px`,
+  verticalS: `${gridUnit * 4}px`,
+  verticalXs: `${gridUnit * 2}px`,
+  verticalXxs: `${gridUnit}px`,
 
   /* Border */
   borderRadius: '3px',
