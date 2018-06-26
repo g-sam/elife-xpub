@@ -1,0 +1,46 @@
+# Build using latest node v9
+FROM node:9 as builder
+
+RUN mkdir /build
+WORKDIR /build
+
+COPY package.json ./
+COPY yarn.lock ./
+
+RUN apt-get install git
+
+COPY client client
+COPY server server
+
+# We do a development install because react-styleguidist is a dev dependency and we want to run tests
+# Remove cache and offline mirror in the same command, to avoid creating intermediate layers
+RUN yarn install --frozen-lockfile \
+    && yarn cache clean \
+    && rm -rf /npm-packages-offline-cache
+
+RUN du -h -d 2 node_modules | sort -h | tail 
+
+COPY app.js .babelrc .eslintignore .eslintrc .prettierrc .stylelintignore .stylelintrc ./
+ 
+COPY app app
+COPY config config
+COPY scripts scripts
+COPY static static
+COPY test test
+COPY webpack webpack
+
+# Need this to build the index.html and app.js
+RUN npm run build
+
+ENV NODE_ENV "production"
+ARG CI_COMMIT_SHA
+ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
+
+
+FROM node:9-alpine
+ENV NODE_ENV "production"
+COPY --from=builder /build /elife-xpub
+WORKDIR /elife-xpub
+
+EXPOSE 3000
+CMD ["node", "app.js"]
