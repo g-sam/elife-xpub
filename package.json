@@ -21,6 +21,7 @@
     "build": "NODE_ENV=production pubsweet build",
     "clean": "rm -rf node_modules;rm -rf server/submission/node_modules",
     "cz": "git-cz",
+    "docker-build": "docker build -f Dockerfile-prod -t elife-xpub-small .",
     "lint": "npm run lint:js && npm run lint:style && npm run lint:package",
     "lint:js": "eslint .",
     "lint:package": "format-package -w package.json",

@@ -7,8 +7,6 @@ WORKDIR /build
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN apt-get install git
-
 COPY client client
 COPY server server
 
@@ -17,8 +15,6 @@ COPY server server
 RUN yarn install --frozen-lockfile \
     && yarn cache clean \
     && rm -rf /npm-packages-offline-cache
-
-RUN du -h -d 2 node_modules | sort -h | tail 
 
 COPY app.js .babelrc .eslintignore .eslintrc .prettierrc .stylelintignore .stylelintrc ./
  
@@ -29,8 +25,17 @@ COPY static static
 COPY test test
 COPY webpack webpack
 
+# Stamp the image with this commit
+RUN echo $(date) ${CI_COMMIT_SHA} >> commit.txt
+
 # Need this to build the index.html and app.js
 RUN npm run build
+
+# Now remove all the packages used for build so we are ready for production
+# NOTE: This is the section not fully working yet
+RUN du -h -d 2 node_modules | sort -h | tail 
+RUN yarn install --production
+RUN du -h -d 2 node_modules | sort -h | tail 
 
 ENV NODE_ENV "production"
 ARG CI_COMMIT_SHA
