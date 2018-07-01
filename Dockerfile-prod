@@ -17,7 +17,7 @@ RUN yarn install --frozen-lockfile \
     && rm -rf /npm-packages-offline-cache
 
 COPY app.js .babelrc .eslintignore .eslintrc .prettierrc .stylelintignore .stylelintrc ./
- 
+
 COPY app app
 COPY config config
 COPY scripts scripts
@@ -33,9 +33,9 @@ RUN npm run build
 
 # Now remove all the packages used for build so we are ready for production
 # NOTE: This is the section not fully working yet
-RUN du -h -d 2 node_modules | sort -h | tail 
+RUN rm -rf node_modules
 RUN yarn install --production
-RUN du -h -d 2 node_modules | sort -h | tail 
+RUN du -h -d 2 node_modules | sort -h | tail
 
 ENV NODE_ENV "production"
 ARG CI_COMMIT_SHA
