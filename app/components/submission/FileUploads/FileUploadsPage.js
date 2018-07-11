@@ -4,8 +4,8 @@ import { Mutation } from 'react-apollo'
 import FileUploads from './FileUploads'
 
 const UPLOAD_MUTATION = gql`
-  mutation UploadFile($id: ID!, $file: Upload!) {
-    uploadManuscript(id: $id, file: $file) {
+  mutation UploadFile($id: ID!, $file: Upload!, $fileSize: Int!) {
+    uploadManuscript(id: $id, file: $file, fileSize: $fileSize) {
       id
       title
       files {
@@ -37,14 +37,12 @@ const FileUploadsPage = ({
             error: uploadError,
           }}
           formError={errors[fieldName] && touched[fieldName]}
-          onDrop={([file]) =>
-            uploadFile({
-              variables: { file, id: values.id },
+          onDrop={([file]) => uploadFile({
+              variables: { file, id: values.id, fileSize: file.size },
             }).then(({ data }) => {
               setFieldValue('title', data.uploadManuscript.title)
               setFieldValue(fieldName, data.uploadManuscript.files)
-            })
-          }
+            })}
           previewUrl={`/manuscript/${values.id}`}
           setFieldValue={setFieldValue}
           {...props}

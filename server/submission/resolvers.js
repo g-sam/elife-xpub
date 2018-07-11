@@ -147,7 +147,7 @@ const resolvers = {
       return newManuscript
     },
 
-    async uploadManuscript(_, { file, id }) {
+    async uploadManuscript(_, { file, id, fileSize }) {
       const { stream, filename, mimetype } = await file
 
       const manuscriptContainer = path.join(uploadsPath, id)
@@ -170,6 +170,15 @@ const resolvers = {
       // save source file locally
       const saveFileStream = fs.createWriteStream(manuscriptSourcePath)
       stream.pipe(saveFileStream)
+
+      let uploadedSize = 0
+      stream.on('data', chunk => {
+        uploadedSize += chunk.length
+        console.log(
+          `percentage done: ${(uploadedSize * 100 / fileSize).toFixed(2)}`,
+        )
+        // console.log(`new data of size ${chunk.length}`);
+      })
       const saveFilePromise = new Promise((resolve, reject) => {
         saveFileStream.on('finish', () => resolve(true))
         saveFileStream.on('error', reject)

@@ -14,7 +14,7 @@ const typeDefs = `
       createSubmission: Manuscript!
       deleteManuscript(id: ID!): ID!
       updateSubmission(data: ManuscriptInput!, isAutoSave: Boolean): Manuscript!
-      uploadManuscript(id: ID!, file: Upload!): Manuscript!
+      uploadManuscript(id: ID!, file: Upload!, fileSize: Int!): Manuscript!
       finishSubmission(data: ManuscriptInput!): Manuscript!
     }
     
